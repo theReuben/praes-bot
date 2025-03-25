@@ -4,7 +4,7 @@ from twitchio.ext import commands
 
 # Twitch Bot Credentials
 BOT_NICK = "PraesBot"
-TOKEN = "1rztlvhouaytk2yuycxu2ytelmj47f"
+TOKEN = "token"
 CHANNEL = ["barbosaOnline"]
 
 
