@@ -30,20 +30,16 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
-            cd /home/ec2-user/praes-bot  # Change to your app directory
-            git pull origin main  # Pull latest changes
-          
-            # Ensure Python & dependencies are installed
-            python3 -m venv venv  # Create virtual environment
+          ssh -o StrictHostKeyChecking=no ec2-user@${{ EC2_HOST }} << 'EOF'
+            cd /home/ec2-user/praes-bot
+            git pull origin main
+            python3 -m venv venv
             source venv/bin/activate
             pip3 install --upgrade pip
-            pip3 install -r requirements.txt  # Install dependencies
-          
-            # Load secret from AWS SSM
+            pip3 install -r requirements.txt
             export TWITCH_OAUTH_TOKEN=$(aws ssm get-parameter --name "TWITCH_OAUTH_TOKEN" --with-decryption --query "Parameter.Value" --output text)
-          
-            # Run the Python script
-            nohup python3 main.py > output.log 2>&1 &
+            nohup python3 twitch_praesbot.py > output.log 2>&1 &
+          EOF
+
           EOF
    
