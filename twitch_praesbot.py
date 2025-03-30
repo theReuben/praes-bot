@@ -9,7 +9,7 @@ CHANNEL = ["barbosaOnline"]
 
 # Function to get the TWITCH_OAUTH_TOKEN from AWS SSM
 def get_twitch_oauth_token():
-    ssm_client = boto3.client('ssm')
+    ssm_client = boto3.client('ssm', region_name='eu-west-2')
 
     # Fetch the parameter from AWS SSM
     try:
