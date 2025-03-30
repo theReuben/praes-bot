@@ -56,7 +56,7 @@ jobs:
           cd
           pwd
           ls -l
-          cd /home/ec2-user/praes-bot
+          cd praes-bot
           pwd
           ls -l
           python3 twitch_praesbot.py  # Replace with your script filename
