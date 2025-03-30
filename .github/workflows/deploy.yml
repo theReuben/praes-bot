@@ -18,7 +18,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-2  # Change to your region
+          aws-region: eu-west-2
 
       - name: Store Secret in AWS SSM
         run: |
@@ -28,20 +28,31 @@ jobs:
             --type "SecureString" \
             --overwrite
 
+      - name: Set up SSH directory
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
       - name: Add EC2 to known hosts
         run: |
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
-
+          chmod 644 ~/.ssh/known_hosts
 
       - name: Deploy to EC2
         run: |
-          ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << "EOF"
+          set -e
+          # Ensure virtual environment is created only if it doesn't exist
+          if [ ! -d "venv" ]; then
+            python3 -m venv venv
+          fi
+          source venv/bin/activate
+          pip3 install --upgrade pip setuptools wheel
+          pip3 install -r requirements.txt
+          
+          export TWITCH_OAUTH_TOKEN=$(aws ssm get-parameter --name "TWITCH_OAUTH_TOKEN" --with-decryption --query "Parameter.Value" --output text)
+          
+          ssh ec2-user@${{ secrets.EC2_HOST }} << "EOF"
             cd /home/ec2-user/praes-bot
             git pull origin main
-            python3 -m venv venv
-            source venv/bin/activate
-            pip3 install --upgrade pip
-            pip3 install -r requirements.txt
-            export TWITCH_OAUTH_TOKEN=$(aws ssm get-parameter --name "TWITCH_OAUTH_TOKEN" --with-decryption --query "Parameter.Value" --output text)
             nohup python3 twitch_praesbot.py > output.log 2>&1 &
-          EOF 
+          EOF
