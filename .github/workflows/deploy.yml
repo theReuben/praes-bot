@@ -53,5 +53,5 @@ jobs:
         ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
           cd /path/to/your/project
           git pull origin main  # Pull latest changes (optional, depends on your repo setup)
-          python3 your_script.py  # Replace with your script filename
+          python3 twitch_praesbot.py  # Replace with your script filename
         EOF
