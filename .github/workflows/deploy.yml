@@ -30,8 +30,8 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
-            cd /home/ubuntu/my-app  # Change to your app directory
+          ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+            cd /home/ec2-user/praes-bot
             git pull origin main  # Pull latest changes
             TWITCH_OAUTH_TOKEN=$(aws ssm get-parameter --name "TWITCH_OAUTH_TOKEN" --with-decryption --query "Parameter.Value" --output text)
             export TWITCH_OAUTH_TOKEN
