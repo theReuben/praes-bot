@@ -3,7 +3,7 @@ name: Deploy Python Script to EC2
 on:
   push:
     branches:
-      - main  # Trigger deployment when changes are pushed to the main branch
+      - main
 
 jobs:
   deploy:
@@ -45,19 +45,18 @@ jobs:
     - name: Add SSH private key to GitHub Actions
       uses: webfactory/ssh-agent@v0.5.3
       with:
-        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}  # Make sure to add your SSH private key in GitHub Secrets
+        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
     # Deploy to EC2
     - name: Deploy to EC2
       run: |
         ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
-          pwd
-          ls -l
-          cd
-          pwd
-          ls -l
+          cd /home/ec2-user
+          if [ ! -d "praes-bot" ]; then  # Check if the directory exists
+            git clone https://github.com/theReuben/praes-bot.git praes-bot
+          fi
           cd praes-bot
-          pwd
-          ls -l
-          python3 twitch_praesbot.py  # Replace with your script filename
+          git pull origin main
+          python3 twitch_praesbot.py
         EOF
+
