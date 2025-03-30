@@ -51,8 +51,6 @@ jobs:
     - name: Deploy to EC2
       run: |
         ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
-          cd
-          cd home/ec2-user/
           git pull origin main  # Pull latest changes (optional, depends on your repo setup)
           python3 twitch_praesbot.py  # Replace with your script filename
         EOF
