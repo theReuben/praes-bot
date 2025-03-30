@@ -39,7 +39,4 @@ jobs:
             pip3 install -r requirements.txt
             export TWITCH_OAUTH_TOKEN=$(aws ssm get-parameter --name "TWITCH_OAUTH_TOKEN" --with-decryption --query "Parameter.Value" --output text)
             nohup python3 twitch_praesbot.py > output.log 2>&1 &
-          EOF
-
-          EOF
-   
+          EOF 
