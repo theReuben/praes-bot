@@ -1,0 +1,41 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main  # Change to your deploy branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-2  # Change to your region
+
+      - name: Store Secret in AWS SSM
+        run: |
+          aws ssm put-parameter \
+            --name "TWITCH_OATH_TOKEN" \
+            --value "${{ secrets.TWITCH_OATH_TOKEN }}" \
+            --type "SecureString" \
+            --overwrite
+
+      - name: Deploy to EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
+            cd /home/ubuntu/my-app  # Change to your app directory
+            git pull origin main  # Pull latest changes
+            TWITCH_OATH_TOKEN=$(aws ssm get-parameter --name "TWITCH_OATH_TOKEN" --with-decryption --query "Parameter.Value" --output text)
+            export TWITCH_OATH_TOKEN
+            docker-compose up -d --build  # Restart your app (modify as needed)
+          EOF
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_KEY }}
