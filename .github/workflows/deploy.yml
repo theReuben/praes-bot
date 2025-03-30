@@ -23,7 +23,7 @@ jobs:
       - name: Store Secret in AWS SSM
         run: |
           aws ssm put-parameter \
-            --name "TWITCH_OATH_TOKEN" \
+            --name "TWITCH_OAUTH_TOKEN" \
             --value "${{ secrets.TWITCH_OAUTH_TOKEN }}" \
             --type "SecureString" \
             --overwrite
@@ -33,8 +33,8 @@ jobs:
           ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
             cd /home/ubuntu/my-app  # Change to your app directory
             git pull origin main  # Pull latest changes
-            TWITCH_OATH_TOKEN=$(aws ssm get-parameter --name "TWITCH_OATH_TOKEN" --with-decryption --query "Parameter.Value" --output text)
-            export TWITCH_OATH_TOKEN
+            TWITCH_OAUTH_TOKEN=$(aws ssm get-parameter --name "TWITCH_OAUTH_TOKEN" --with-decryption --query "Parameter.Value" --output text)
+            export TWITCH_OAUTH_TOKEN
             docker-compose up -d --build  # Restart your app (modify as needed)
           EOF
         env:
