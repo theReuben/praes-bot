@@ -1,16 +1,28 @@
 import random
 import re
+import boto3
 from twitchio.ext import commands
 
 # Twitch Bot Credentials
 BOT_NICK = "PraesBot"
-TOKEN = "token"
 CHANNEL = ["barbosaOnline"]
+
+# Function to get the TWITCH_OAUTH_TOKEN from AWS SSM
+def get_twitch_oauth_token():
+    ssm_client = boto3.client('ssm')
+
+    # Fetch the parameter from AWS SSM
+    try:
+        response = ssm_client.get_parameter(Name='TWITCH_OAUTH_TOKEN', WithDecryption=True)
+        return response['Parameter']['Value']
+    except Exception as e:
+        print(f"Error fetching TWITCH_OAUTH_TOKEN from SSM: {e}")
+        return None
 
 
 class PraesBot(commands.Bot):
-    def __init__(self):
-        super().__init__(token=TOKEN, prefix="!", nick=BOT_NICK, initial_channels=CHANNEL)
+    def __init__(self, token):
+        super().__init__(token=token, prefix="!", nick=BOT_NICK, initial_channels=CHANNEL)
 
     async def event_ready(self):
         print(f"Logged in as {self.nick}")
@@ -46,7 +58,12 @@ def praesify_text(text):
 # Run the bot
 def main():
     """Starts the Twitch bot."""
-    bot = PraesBot()
+    token = get_twitch_oauth_token()
+    if token is None:
+        print("Failed to retrieve Twitch OAuth token. Exiting.")
+        return
+
+    bot = PraesBot(token)
     bot.run()
 
 
