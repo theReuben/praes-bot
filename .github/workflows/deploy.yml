@@ -24,7 +24,7 @@ jobs:
         run: |
           aws ssm put-parameter \
             --name "TWITCH_OATH_TOKEN" \
-            --value "${{ secrets.TWITCH_OATH_TOKEN }}" \
+            --value "${{ secrets.TWITCH_OAUTH_TOKEN }}" \
             --type "SecureString" \
             --overwrite
 
