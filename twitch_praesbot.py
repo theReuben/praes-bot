@@ -43,6 +43,7 @@ class PraesBot(commands.Bot):
         if modified_message != message.content:
             await message.channel.send(modified_message)
 
+
 def match_case(original, new):
     if original.islower():
         return new.lower()
@@ -59,9 +60,11 @@ def match_case(original, new):
 
     return matched + new[len(original):]
 
+
 def is_valid_word(word):
     word_list = stopwords.words('english')
     return word.lower() in word_list
+
 
 def tentucky_fried_jicken(word):
     return f"{word[0].upper()}entucky {word[1].upper()}ried {word[2].upper()}icken"
@@ -77,12 +80,14 @@ def praesify_text(text):
     words = text.split()
     modified_words = []
 
+    is_praesify = random.random() < 0.4
+
     for word in words:
         modified_word = word
         if len(word) == 3 and not is_valid_word(word):
             # Three letter words get Tentucky Fried Jickened
             modified_word = tentucky_fried_jicken(word)
-        elif len(word) > 4 and random.random() < 0.1:
+        elif len(word) > 4 and random.random() < 0.2 and is_praesify:
             # 5+ letter words have a 10% chance to be praesified
             modified_word = praesify_word(word)
         modified_words.append(modified_word)
