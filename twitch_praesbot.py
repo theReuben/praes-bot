@@ -3,23 +3,6 @@ import re
 import boto3
 from twitchio.ext import commands
 
-import os
-import sys
-
-pid_file = "/tmp/twitch_praesbot.pid"
-
-# Check if the PID file exists and if the process is running
-if os.path.exists(pid_file):
-    with open(pid_file, 'r') as f:
-        pid = f.read().strip()
-    if pid and os.path.exists(f"/proc/{pid}"):
-        print("Another instance is already running.")
-        sys.exit(1)
-
-# Write the current PID to the file
-with open(pid_file, 'w') as f:
-    f.write(str(os.getpid()))
-
 
 # Twitch Bot Credentials
 BOT_NICK = "PraesBot"
@@ -81,7 +64,7 @@ def match_case(original, new):
 
 def tentucky_fried_jicken(word):
     if len(word) == 3 and word.isupper():
-        return f"{word[0]}entucky {word[1]}ried {word[2]}icken"
+        return f"{word[0].upper()}entucky {word[1].upper()}ried {word[2].upper()}icken"
     return word
 
 
@@ -97,7 +80,7 @@ def praesify_text(text):
 
     for word in words:
         modified_word = word
-        if len(word) == 3 and word.isupper():
+        if len(word) == 3:
             # Three letter caps words get Tentucky Fried Jickened
             modified_word = tentucky_fried_jicken(word)
         elif len(word) > 4 and random.random < 0.15:
