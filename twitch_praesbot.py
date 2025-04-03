@@ -6,7 +6,7 @@ from twitchio.ext import commands
 import os
 import sys
 
-pid_file = "/var/run/twitch_praesbot.pid"
+pid_file = "/tmp/twitch_praesbot.pid"
 
 # Check if the PID file exists and if the process is running
 if os.path.exists(pid_file):
