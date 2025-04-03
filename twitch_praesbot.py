@@ -58,9 +58,7 @@ def match_case(original, new):
     return matched + new[len(original):]
 
 def tentucky_fried_jicken(word):
-    if len(word) == 3 and word.isupper():
-        return f"{word[0].upper()}entucky {word[1].upper()}ried {word[2].upper()}icken"
-    return word
+    return f"{word[0].upper()}entucky {word[1].upper()}ried {word[2].upper()}icken"
 
 
 def praesify_word(word):
