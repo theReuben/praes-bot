@@ -42,6 +42,11 @@ class PraesBot(commands.Bot):
     def __init__(self, token):
         super().__init__(token=token, prefix="!", nick=BOT_NICK, initial_channels=CHANNEL)
 
+    @commands.command(name='ping')
+    async def ping_command(self, ctx):
+        latency = round(self._ws.latency * 1000)  # Convert latency to ms
+        await ctx.send(f'Pong! Latency: {latency}ms')
+
     async def event_ready(self):
         print(f"Logged in as {self.nick}")
         for channel in self.connected_channels:
