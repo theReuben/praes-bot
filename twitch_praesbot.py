@@ -92,6 +92,7 @@ def praesify_text(text):
             modified_word = praesify_word(word)
         modified_words.append(modified_word)
 
+    print(f"modified words: {modified_words}")
     return " ".join(modified_words)
 
 
