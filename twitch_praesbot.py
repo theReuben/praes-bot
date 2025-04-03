@@ -2,6 +2,7 @@ import random
 import re
 import boto3
 import nltk
+import logging
 from twitchio.ext import commands
 from nltk.corpus import stopwords
 
@@ -92,7 +93,7 @@ def praesify_text(text):
             modified_word = praesify_word(word)
         modified_words.append(modified_word)
 
-    print(f"modified words: {modified_words}")
+    logging.info(f"modified words: {modified_words}")
     return " ".join(modified_words)
 
 
