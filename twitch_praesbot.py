@@ -1,7 +1,9 @@
 import random
 import re
 import boto3
+import nltk
 from twitchio.ext import commands
+from nltk.corpus import stopwords
 
 
 # Twitch Bot Credentials
@@ -57,6 +59,10 @@ def match_case(original, new):
 
     return matched + new[len(original):]
 
+def is_valid_word(word):
+    word_list = stopwords.words('english')
+    return word.lower() in word_list
+
 def tentucky_fried_jicken(word):
     return f"{word[0].upper()}entucky {word[1].upper()}ried {word[2].upper()}icken"
 
@@ -73,7 +79,7 @@ def praesify_text(text):
 
     for word in words:
         modified_word = word
-        if len(word) == 3:
+        if len(word) == 3 and not is_valid_word(word):
             # Three letter words get Tentucky Fried Jickened
             modified_word = tentucky_fried_jicken(word)
         elif len(word) > 4 and random.random() < 0.1:
@@ -91,6 +97,9 @@ def main():
     if token is None:
         print("Failed to retrieve Twitch OAuth token. Exiting.")
         return
+
+    # Download common words for filtering
+    nltk.download('stopwords')
 
     bot = PraesBot(token)
     bot.run()
