@@ -91,6 +91,7 @@ def praesify_text(text):
         elif len(word) > 4 and random.random() < 0.2 and is_praesify:
             # 5+ letter words have a 10% chance to be praesified
             modified_word = praesify_word(word)
+
         modified_words.append(modified_word)
 
     logging.info(f"modified words: {modified_words}")
