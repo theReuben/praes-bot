@@ -3,6 +3,24 @@ import re
 import boto3
 from twitchio.ext import commands
 
+import os
+import sys
+
+pid_file = "/var/run/twitch_praesbot.pid"
+
+# Check if the PID file exists and if the process is running
+if os.path.exists(pid_file):
+    with open(pid_file, 'r') as f:
+        pid = f.read().strip()
+    if pid and os.path.exists(f"/proc/{pid}"):
+        print("Another instance is already running.")
+        sys.exit(1)
+
+# Write the current PID to the file
+with open(pid_file, 'w') as f:
+    f.write(str(os.getpid()))
+
+
 # Twitch Bot Credentials
 BOT_NICK = "PraesBot"
 CHANNEL = ["barbosaOnline"]
@@ -40,17 +58,47 @@ class PraesBot(commands.Bot):
         if modified_message != message.content:
             await message.channel.send(modified_message)
 
+def match_case(original, new):
+    if original.islower():
+        return new.lower()
+    elif original.isupper():
+        return new.upper()
+    elif original.istitle():
+        return new.title
+
+    # If mixed case, match character by character
+    matched = ''.join(
+        n.upper() if o.isupper() else n.lower()
+        for o,n in zip(original, new)
+    )
+
+    return matched + new[len(original):]
+
+def tentucky_fried_jicken(word):
+    if len(word) == 3 and word.isupper():
+        return f"{word[0]}entucky {word[1]}ried {word[2]}icken"
+    return word
+
+
+def praesify_word(word):
+    modified_word = re.sub(r"^\w{1,3}", "praes", word)  # Replace first few letters
+    modified_word = match_case(word, modified_word)
+    return modified_word
+
 
 def praesify_text(text):
     words = text.split()
     modified_words = []
 
     for word in words:
-        if len(word) > 4 and random.random() < 0.3:  # 30% chance to modify
-            modified_word = re.sub(r"^\w{1,3}", "praes", word)  # Replace first few letters
-            modified_words.append(modified_word)
-        else:
-            modified_words.append(word)
+        modified_word = word
+        if len(word) == 3 and word.isupper():
+            # Three letter caps words get Tentucky Fried Jickened
+            modified_word = tentucky_fried_jicken(word)
+        elif len(word) > 4 and random.random < 0.15:
+            # 5+ letter words have a 10% chance to be praesified
+            modified_word = praesify_word(word)
+        modified_words.append(modified_word)
 
     return " ".join(modified_words)
 

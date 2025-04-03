@@ -52,7 +52,7 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
           cd /home/ec2-user
-          if [ ! -d "praes-bot" ]; then  # Check if the directory exists
+          if [ ! -d "praes-bot" ]; then
             git clone https://github.com/theReuben/praes-bot.git praes-bot
           fi
           cd praes-bot
