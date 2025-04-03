@@ -83,7 +83,7 @@ def praesify_text(text):
         if len(word) == 3:
             # Three letter words get Tentucky Fried Jickened
             modified_word = tentucky_fried_jicken(word)
-        elif len(word) > 4 and random.random < 0.15:
+        elif len(word) > 4 and random.random() < 0.15:
             # 5+ letter words have a 10% chance to be praesified
             modified_word = praesify_word(word)
         modified_words.append(modified_word)
