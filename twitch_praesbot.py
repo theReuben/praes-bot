@@ -83,7 +83,7 @@ def praesify_text(text):
     words = text.split()
     modified_words = []
 
-    is_praesify = random.random() < 0.4
+    is_praesify = random.random() < 0.2
 
     for word in words:
         modified_word = word
