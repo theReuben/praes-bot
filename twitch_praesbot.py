@@ -2,10 +2,8 @@ import random
 import re
 import boto3
 import nltk
-import logging
-from twitchio.ext import commands
 from nltk.corpus import stopwords
-
+from twitchio.ext import commands
 
 # Twitch Bot Credentials
 BOT_NICK = "PraesBot"
@@ -44,6 +42,10 @@ class PraesBot(commands.Bot):
         if modified_message != message.content:
             await message.channel.send(modified_message)
 
+    @commands.command(name='ping')
+    async def ping_command(self, ctx):
+        await ctx.send('Pong!')
+
 
 def match_case(original, new):
     if original.islower():
@@ -51,7 +53,7 @@ def match_case(original, new):
     elif original.isupper():
         return new.upper()
     elif original.istitle():
-        return new.title
+        return new.title()
 
     # If mixed case, match character by character
     matched = ''.join(
@@ -94,7 +96,7 @@ def praesify_text(text):
 
         modified_words.append(modified_word)
 
-    logging.info(f"modified words: {modified_words}")
+
     return " ".join(modified_words)
 
 
